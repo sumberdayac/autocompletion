@@ -15,9 +15,11 @@ void initializeTrie(TrieNode *root, WordWeightPair dataset[], int size)
 
 void displayMenu()
 {
+
     printf("Menu:\n");
     printf("1. Autocomplete\n");
-    printf("2. Insert new word with weight\n");
+    printf("2. Display Dictionary\n");
+    printf("3. Insert new word with weight\n");
     printf("0. Exit\n");
 }
 
@@ -37,10 +39,14 @@ int main()
 
         switch (choice)
         {
+
         case 1:
             handleAutocomplete(root);
             break;
         case 2:
+            displayDictionary(root);
+            break;
+        case 3:
             handleInsertNewWord(root);
             break;
         case 0:

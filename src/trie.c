@@ -37,3 +37,26 @@ void insertWord(TrieNode *root, WordWeightPair wordWeightPair)
     current->isEndOfWord = 1;
     current->weight = weight; // Update weight only for the end-of-word node
 }
+
+void displayDictionary(TrieNode *root)
+{
+    char buffer[100];
+    displayDictionaryHelper(root, buffer, 0);
+}
+
+void displayDictionaryHelper(TrieNode *node, char *buffer, int index)
+{
+    if (node->isEndOfWord)
+    {
+        buffer[index] = '\0';
+        printf("%s (f:%d)\n", buffer, node->weight);
+    }
+    for (int i = 0; i < ALPHABET_SIZE; i++)
+    {
+        if (node->children[i])
+        {
+            buffer[index] = 'a' + i;
+            displayDictionaryHelper(node->children[i], buffer, index + 1);
+        }
+    }
+}

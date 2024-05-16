@@ -18,5 +18,7 @@ typedef struct
 
 TrieNode *createNode();
 void insertWord(TrieNode *root, WordWeightPair wordWeightPair);
+void displayDictionary(TrieNode *root);
+void displayDictionaryHelper(TrieNode *node, char *buffer, int index);
 
 #endif // TRIE_H
