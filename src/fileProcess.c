@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "../include/fileProcess.h"
 
 #define string char*
 
@@ -14,12 +15,12 @@ typedef struct vocabNode {
 vocabNode* createNode(const char *word, int weight) {
     vocabNode *newNode = (vocabNode *)malloc(sizeof(vocabNode));
     if (newNode == NULL) {
-        fprintf(stderr, "Memory allocation failed.\n");
+        fprintf(stderr, "Alokasi memori gagal.\n");
         exit(1);
     }
     newNode->word = strdup(word);
     if (newNode->word == NULL) {
-        fprintf(stderr, "Memory allocation for word failed.\n");
+        fprintf(stderr, "Alokasi memori gagal.\n");
         free(newNode);
         exit(1);
     }
@@ -83,7 +84,7 @@ void processText(vocabNode **head, const char *text) {
 char* readFileContent(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        fprintf(stderr, "Error opening file.\n");
+        fprintf(stderr, "File gagal dibuka.\n");
         exit(1);
     }
 
@@ -93,7 +94,7 @@ char* readFileContent(const char *filename) {
 
     char *content = (char *)malloc((length + 1) * sizeof(char));
     if (content == NULL) {
-        fprintf(stderr, "Memory allocation failed.\n");
+        fprintf(stderr, "Alokasi memori gagal.\n");
         fclose(file);
         exit(1);
     }
@@ -108,7 +109,7 @@ char* readFileContent(const char *filename) {
 void loadInitialData(vocabNode **head, const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        fprintf(stderr, "Error opening file.\n");
+        fprintf(stderr, "File gagal dibuka.\n");
         exit(1);
     }
 
@@ -130,7 +131,7 @@ void loadInitialData(vocabNode **head, const char *filename) {
 void saveData(vocabNode *head, const char *filename) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
-        fprintf(stderr, "Error opening file for writing.\n");
+        fprintf(stderr, "File gagal dibuka.\n");
         exit(1);
     }
 
@@ -143,43 +144,29 @@ void saveData(vocabNode *head, const char *filename) {
     fclose(file);
 }
 
-int main() {
-    vocabNode *head = NULL;
-    const char *initialDataFile = "words.txt";
-    
+void updateDictionaryFromFile(vocabNode **head) {
     printf("Masukkan nama file referensi dengan ekstensi txt: ");
     
     char filename[256];
     if (scanf("%255s", filename) != 1) {
-        fprintf(stderr, "Error reading filename.\n");
-        return 1;
+        fprintf(stderr, "File tidak ditemukan!\n");
+        return;
     }
     
     // Append ".txt" to the filename
     char newTextFile[260]; // Ensure there's enough space
     snprintf(newTextFile, sizeof(newTextFile), "%s.txt", filename);
-    
-    // Load initial data from words.txt
-    loadInitialData(&head, initialDataFile);
-    
+
     // Read the new text content from the reference file
     char *newText = readFileContent(newTextFile);
     if (newText == NULL) {
-        fprintf(stderr, "Error reading reference file.\n");
-        freeList(head);
-        return 1;
+        fprintf(stderr, "File referensi gagal dibuka.\n");
+        return;
     }
-    
-    // Process the new text to update the linked list
-    processText(&head, newText);
-    
-    // Save the updated linked list back to words.txt
-    saveData(head, initialDataFile);
-    
-    // Free the allocated memory for the linked list and the new text
-    freeList(head);
-    free(newText);
-    
-    return 0;
-}
 
+    // Process the new text to update the linked list
+    processText(head, newText);
+
+    // Free the allocated memory for the new text
+    free(newText);
+}
