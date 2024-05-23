@@ -127,6 +127,23 @@ void handleInsertNewWord(TrieNode *root)
         current->isEndOfWord = 1;
         current->weight = weight; // Assign the new weight if the word is new
     }
+  
+    vocabNode *head = NULL;
+    loadInitialData(&head, "words.txt");
 
+    vocabNode *foundNode = findWord(head, buffer); // Corrected: pass head instead of &head
+    if (foundNode)
+    {
+        foundNode->weight += weight;
+    }
+    else
+    {
+        vocabNode *newNode = createNodeDictionary(buffer, weight);
+        newNode->next = head; // Corrected: head itself, not &head
+        head = newNode;
+    }
+
+    saveData(head, "words.txt");
+  
     free(buffer);
 }
