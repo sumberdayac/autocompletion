@@ -2,6 +2,7 @@
 #include "../include/main.h"
 #include "../include/trie.h"
 #include "../include/autocomplete.h"
+#include "../include/fileProcess.h"
 #include "autocomplete.c"
 #include "trie.c"
 
