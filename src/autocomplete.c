@@ -127,7 +127,7 @@ void handleInsertNewWord(TrieNode *root)
         current->isEndOfWord = 1;
         current->weight = weight; // Assign the new weight if the word is new
     }
-
+  
     vocabNode *head = NULL;
     loadInitialData(&head, "words.txt");
 
@@ -144,6 +144,6 @@ void handleInsertNewWord(TrieNode *root)
     }
 
     saveData(head, "words.txt");
-
+  
     free(buffer);
 }
