@@ -1,22 +1,32 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../include/main.h"
 #include "../include/trie.h"
 #include "../include/autocomplete.h"
 #include "../include/fileProcess.h"
 #include "autocomplete.c"
-#include "trie.c"
 
-void initializeTrie(TrieNode *root, WordWeightPair dataset[], int size)
+void initializeTrieFromList(TrieNode *root, vocabNode *head)
 {
-    for (int i = 0; i < size; i++)
+    vocabNode *current = head;
+    while (current != NULL)
     {
-        insertWord(root, dataset[i]);
+        WordWeightPair pair;
+        pair.word = strdup(current->word);
+        if (pair.word == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            exit(1);
+        }
+        pair.weight = current->weight;
+        insertWordTrie(root, pair);
+        free(pair.word);
+        current = current->next;
     }
 }
 
 void displayMenu()
 {
-
     printf("Menu:\n");
     printf("1. Autocomplete\n");
     printf("2. Display Dictionary\n");
@@ -26,10 +36,12 @@ void displayMenu()
 
 int main()
 {
-    TrieNode *root = createNode();
-    WordWeightPair dataset[] = {{"apple", 3}, {"application", 5}, {"app", 2}, {"banana", 4}};
-    int datasetSize = sizeof(dataset) / sizeof(dataset[0]);
-    initializeTrie(root, dataset, datasetSize);
+    vocabNode *head = NULL;
+    const char *initialDataFile = "words.txt";
+    loadInitialData(&head, initialDataFile);
+
+    TrieNode *root = createNodeTrie();
+    initializeTrieFromList(root, head);
 
     int choice;
     do
@@ -40,7 +52,6 @@ int main()
 
         switch (choice)
         {
-
         case 1:
             handleAutocomplete(root);
             break;
@@ -58,6 +69,9 @@ int main()
             break;
         }
     } while (choice != 0);
+
+    saveData(head, initialDataFile);
+    freeList(head);
 
     return 0;
 }

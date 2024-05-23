@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../include/trie.h"
 
-TrieNode *createNode()
+TrieNode *createNodeTrie()
 {
     TrieNode *node = (TrieNode *)malloc(sizeof(TrieNode));
     if (node)
@@ -18,7 +18,7 @@ TrieNode *createNode()
     return node;
 }
 
-void insertWord(TrieNode *root, WordWeightPair wordWeightPair)
+void insertWordTrie(TrieNode *root, WordWeightPair wordWeightPair)
 {
     const char *word = wordWeightPair.word;
     int weight = wordWeightPair.weight;
@@ -29,7 +29,7 @@ void insertWord(TrieNode *root, WordWeightPair wordWeightPair)
         int index = *word - 'a';
         if (!current->children[index])
         {
-            current->children[index] = createNode();
+            current->children[index] = createNodeTrie();
         }
         current = current->children[index];
         word++;
