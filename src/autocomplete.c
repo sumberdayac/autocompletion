@@ -72,18 +72,40 @@ void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int cou
 void handleAutocomplete(TrieNode *root)
 {
     char *prefix = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
+    char *buffer = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
     if (!prefix)
     {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
 
-    printf("Enter prefix: ");
-    scanf("%s", prefix);
-    WordWeightPair suggestions[MAX_SUGGESTIONS];
-    int count = 0;
-    findSuggestions(root, prefix, suggestions, &count);
-    displaySuggestions(prefix, suggestions, count);
+    prefix[0] = '\0';
+    while (true)
+    {
+        if (prefix[0] == '\0')
+        {
+            printf("Enter prefix: ");
+            scanf("%s", prefix);
+        }
+        else
+        {
+            printf("continue prefix: %s", prefix);
+            scanf("%s", buffer);
+            prefix = strcat(prefix, buffer);
+        }
+        WordWeightPair suggestions[MAX_SUGGESTIONS];
+        int count = 0;
+        findSuggestions(root, prefix, suggestions, &count);
+        displaySuggestions(prefix, suggestions, count);
+
+        printf("\nDo you want to continue? (y/n): ");
+        char choice;
+        scanf(" %c", &choice);
+        if (choice == 'n')
+        {
+            break;
+        }
+    }
 
     free(prefix);
 }
@@ -127,7 +149,7 @@ void handleInsertNewWord(TrieNode *root)
         current->isEndOfWord = 1;
         current->weight = weight; // Assign the new weight if the word is new
     }
-  
+
     vocabNode *head = NULL;
     loadInitialData(&head, "words.txt");
 
@@ -144,6 +166,6 @@ void handleInsertNewWord(TrieNode *root)
     }
 
     saveData(head, "words.txt");
-  
+
     free(buffer);
 }

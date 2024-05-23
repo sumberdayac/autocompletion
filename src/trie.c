@@ -49,7 +49,7 @@ void displayDictionaryHelper(TrieNode *node, char *buffer, int index)
     if (node->isEndOfWord)
     {
         buffer[index] = '\0';
-        printf("%s (f:%d)\n", buffer, node->weight);
+        printf("%s (Weight :%d)\n", buffer, node->weight);
     }
     for (int i = 0; i < ALPHABET_SIZE; i++)
     {

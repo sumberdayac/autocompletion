@@ -31,7 +31,8 @@ void displayMenu()
     printf("1. Autocomplete\n");
     printf("2. Display Dictionary\n");
     printf("3. Insert new word with weight\n");
-    printf("4. Print Trie\n");
+    printf("4. Load reference file\n");
+    printf("5. Print Trie\n");
     printf("0. Exit\n");
 }
 
@@ -47,28 +48,39 @@ int main()
     int choice;
     do
     {
+        system("cls");
         displayMenu();
         printf("Enter your choice: ");
         scanf("%d", &choice);
+        printf("\n");
 
         switch (choice)
         {
         case 1:
             handleAutocomplete(root);
+            getch();
             break;
         case 2:
             displayDictionary(root);
+            getch();
             break;
         case 3:
             handleInsertNewWord(root);
+            getch();
             break;
         case 4:
+            updateDictionaryFromFile(&head);
+            getch();
+            break;
+        case 5:
             bool isLast[MAX_WORD_LENGTH] = {0};
             char prefix[2] = " ";
             printTrie(root, prefix, isLast, 0);
+            getch();
             break;
         case 0:
             printf("Exiting...\n");
+            getch();
             break;
         default:
             printf("Invalid choice. Please try again.\n");

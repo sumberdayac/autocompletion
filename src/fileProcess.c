@@ -172,6 +172,10 @@ void updateDictionaryFromFile(vocabNode **head) {
     // Process the new text to update the linked list
     processText(head, newText);
 
+    printf("Data updated successfully.\n");
+
+    saveData(*head, "words.txt");
+
     // Free the allocated memory for the new text
     free(newText);
     free(filename);
