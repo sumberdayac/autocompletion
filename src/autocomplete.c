@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/autocomplete.h"
+#include "../include/trie.h"
+#include "../include/fileProcess.h"
+#include "fileProcess.c"
 
 #define MAX_WORD_LENGTH 100
 #define MAX_SUGGESTIONS 100
@@ -11,7 +14,12 @@ void autocompleteHelper(TrieNode *node, char *buffer, int index, WordWeightPair 
     if (node->isEndOfWord)
     {
         buffer[index] = '\0';
-        strcpy(suggestions[*count].word, buffer);
+        suggestions[*count].word = strdup(buffer);
+        if (suggestions[*count].word == NULL)
+        {
+            fprintf(stderr, "Memory allocation failed.\n");
+            exit(1);
+        }
         suggestions[*count].weight = node->weight;
         (*count)++;
     }
@@ -47,7 +55,8 @@ void findSuggestions(TrieNode *root, const char *prefix, WordWeightPair *suggest
         p++;
     }
     char buffer[MAX_WORD_LENGTH];
-    autocompleteHelper(current, buffer, 0, suggestions, count);
+    strcpy(buffer, prefix);
+    autocompleteHelper(current, buffer, strlen(prefix), suggestions, count);
 }
 
 void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int count)
@@ -55,27 +64,69 @@ void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int cou
     qsort(suggestions, count, sizeof(WordWeightPair), compareWeights);
     for (int i = 0; i < count; i++)
     {
-        printf("%s%s (f:%d)\n", prefix, suggestions[i].word, suggestions[i].weight);
+        printf("%s%s (f:%d)\n", prefix, suggestions[i].word + strlen(prefix), suggestions[i].weight);
+        free(suggestions[i].word); // Free the allocated memory for word
     }
 }
 
 void handleAutocomplete(TrieNode *root)
 {
-    char prefix[MAX_WORD_LENGTH];
+    char *prefix = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
+    if (!prefix)
+    {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(1);
+    }
+
     printf("Enter prefix: ");
     scanf("%s", prefix);
     WordWeightPair suggestions[MAX_SUGGESTIONS];
     int count = 0;
     findSuggestions(root, prefix, suggestions, &count);
     displaySuggestions(prefix, suggestions, count);
+
+    free(prefix);
 }
 
 void handleInsertNewWord(TrieNode *root)
 {
-    WordWeightPair newWord;
+    char *buffer = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
+    if (!buffer)
+    {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(1);
+    }
+
+    int weight;
+
     printf("Enter new word: ");
-    scanf("%s", newWord.word);
+    scanf("%s", buffer);
+
     printf("Enter weight: ");
-    scanf("%d", &newWord.weight);
-    insertWord(root, newWord);
+    scanf("%d", &weight);
+
+    TrieNode *current = root;
+    const char *p = buffer;
+    while (*p)
+    {
+        int index = *p - 'a';
+        if (!current->children[index])
+        {
+            current->children[index] = createNodeTrie();
+        }
+        current = current->children[index];
+        p++;
+    }
+
+    if (current->isEndOfWord)
+    {
+        current->weight += weight; // Add to existing weight if the word is already there
+    }
+    else
+    {
+        current->isEndOfWord = 1;
+        current->weight = weight; // Assign the new weight if the word is new
+    }
+
+    free(buffer);
 }

@@ -3,21 +3,19 @@
 
 #define ALPHABET_SIZE 26
 
-typedef struct TrieNode
-{
+typedef struct TrieNode {
     struct TrieNode *children[ALPHABET_SIZE];
     int isEndOfWord;
     int weight;
 } TrieNode;
 
-typedef struct
-{
-    char word[100];
+typedef struct {
+    char *word;
     int weight;
 } WordWeightPair;
 
-TrieNode *createNode();
-void insertWord(TrieNode *root, WordWeightPair wordWeightPair);
+TrieNode *createNodeTrie();
+void insertWordTrie(TrieNode *root, WordWeightPair wordWeightPair);
 void displayDictionary(TrieNode *root);
 void displayDictionaryHelper(TrieNode *node, char *buffer, int index);
 
