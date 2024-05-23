@@ -77,15 +77,13 @@ void handleAutocomplete(TrieNode *root)
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    while (true){
-        printf("Enter prefix: ");
-        scanf("%s", prefix);
-        WordWeightPair suggestions[MAX_SUGGESTIONS];
-        int count = 0;
-        findSuggestions(root, prefix, suggestions, &count);
-        displaySuggestions(prefix, suggestions, count);
-    }
-    
+
+    printf("Enter prefix: ");
+    scanf("%s", prefix);
+    WordWeightPair suggestions[MAX_SUGGESTIONS];
+    int count = 0;
+    findSuggestions(root, prefix, suggestions, &count);
+    displaySuggestions(prefix, suggestions, count);
 
     free(prefix);
 }
