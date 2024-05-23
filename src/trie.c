@@ -60,3 +60,45 @@ void displayDictionaryHelper(TrieNode *node, char *buffer, int index)
         }
     }
 }
+
+void printTrie(TrieNode *root, char *prefix, bool *isLast, int level)
+{
+    if (root == NULL){
+        return;
+    }
+
+    if (level > 0){
+        for (int i = 0; i < level - 1; i++){
+            if (isLast[i]){
+                printf("    ");
+            } else {
+                printf("|   ");
+            }
+        }
+
+        if (isLast[level - 1]){
+            printf("`--");
+        } else {
+            printf("|--");
+        }
+    }
+
+    printf("%s\n", prefix);
+
+    int childCount = 0;
+    for (int i = 0; i < ALPHABET_SIZE; i++){
+        if (root->children[i]){
+            childCount++;
+        }
+    }
+
+    int currentChild = 0;
+    for (int i = 0; i < ALPHABET_SIZE; i++){
+        if (root->children[i]){
+            isLast[level] = currentChild == childCount -1;
+            char newPrefix[2] = {(char)('A' + i), '\0'};
+            printTrie(root->children[i], newPrefix, isLast, level + 1);
+            currentChild++;
+        }
+    }
+}

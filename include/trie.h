@@ -3,6 +3,8 @@
 
 #define ALPHABET_SIZE 26
 
+#include <stdbool.h>
+
 typedef struct TrieNode {
     struct TrieNode *children[ALPHABET_SIZE];
     int isEndOfWord;
@@ -18,5 +20,7 @@ TrieNode *createNodeTrie();
 void insertWordTrie(TrieNode *root, WordWeightPair wordWeightPair);
 void displayDictionary(TrieNode *root);
 void displayDictionaryHelper(TrieNode *node, char *buffer, int index);
+void printTrie(TrieNode *root, char *prefix, bool *isLast, int level);
+
 
 #endif // TRIE_H

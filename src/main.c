@@ -31,6 +31,7 @@ void displayMenu()
     printf("1. Autocomplete\n");
     printf("2. Display Dictionary\n");
     printf("3. Insert new word with weight\n");
+    printf("4. Print Trie\n");
     printf("0. Exit\n");
 }
 
@@ -60,6 +61,11 @@ int main()
             break;
         case 3:
             handleInsertNewWord(root);
+            break;
+        case 4:
+            bool isLast[MAX_WORD_LENGTH] = {0};
+            char prefix[2] = " ";
+            printTrie(root, prefix, isLast, 0);
             break;
         case 0:
             printf("Exiting...\n");
