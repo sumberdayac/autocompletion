@@ -15,6 +15,7 @@ void displayMenu()
     printf("3. Insert new word with weight\n");
     printf("4. Load reference file\n");
     printf("5. Print Trie\n");
+    printf("6. Delete word\n");
     printf("0. Exit\n");
 }
 
@@ -58,6 +59,10 @@ void mainProcess()
             bool isLast[MAX_WORD_LENGTH] = {0};
             char prefix[2] = " ";
             printTrie(root, prefix, isLast, 0);
+            getch();
+            break;
+        case 6:
+            handleDeleteWord(root, &head);
             getch();
             break;
         case 0:

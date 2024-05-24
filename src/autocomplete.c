@@ -185,3 +185,126 @@ void handleInsertNewWord(TrieNode *root)
 
     free(buffer);
 }
+
+void deleteWordFromTrie(TrieNode *root, const char *word, bool *found)
+{
+    if (!root)
+    {
+        return;
+    }
+
+    TrieNode *stack[MAX_WORD_LENGTH];
+    int indexStack[MAX_WORD_LENGTH];
+    int top = 0;
+
+    TrieNode *current = root;
+    while (*word)
+    {
+        int index = *word - 'a';
+        if (!current->children[index])
+        {
+            return; // Word not found
+        }
+        stack[top] = current;
+        indexStack[top] = index;
+        top++;
+        current = current->children[index];
+        word++;
+    }
+
+    if (current->isEndOfWord)
+    {
+        current->isEndOfWord = 0;
+        current->weight = 0;
+        *found = true;
+
+        for (int i = top - 1; i >= 0; i--)
+        {
+            int index = indexStack[i];
+            if (stack[i]->children[index]->isEndOfWord)
+            {
+                break;
+            }
+            bool hasChildren = false;
+            for (int j = 0; j < ALPHABET_SIZE; j++)
+            {
+                if (stack[i]->children[index]->children[j])
+                {
+                    hasChildren = true;
+                    break;
+                }
+            }
+            if (!hasChildren)
+            {
+                free(stack[i]->children[index]);
+                stack[i]->children[index] = NULL;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+void deleteWordFromDictionary(vocabNode **head, const char *word, bool *found)
+{
+    vocabNode *current = *head;
+    vocabNode *prev = NULL;
+
+    while (current != NULL && strcmp(current->word, word) != 0)
+    {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL)
+    {
+        return; // Word not found
+    }
+
+    if (prev == NULL)
+    {
+        *head = current->next;
+    }
+    else
+    {
+        prev->next = current->next;
+    }
+
+    free(current->word);
+    free(current);
+    *found = true;
+}
+
+void handleDeleteWord(TrieNode *trieRoot, vocabNode **head)
+{
+    bool foundInTrie = false;
+    bool foundInDict = false;
+    char word[MAX_WORD_LENGTH];
+
+    printf("Enter word to delete: ");
+    scanf("%s", word);
+
+    deleteWordFromTrie(trieRoot, word, &foundInTrie);
+    deleteWordFromDictionary(head, word, &foundInDict);
+
+    if (foundInTrie && foundInDict)
+    {
+        printf("Word '%s' has been successfully deleted from both trie and dictionary.\n", word);
+    }
+    else if (foundInTrie)
+    {
+        printf("Word '%s' has been successfully deleted from trie.\n", word);
+    }
+    else if (foundInDict)
+    {
+        printf("Word '%s' has been successfully deleted from dictionary.\n", word);
+    }
+    else
+    {
+        printf("Word '%s' not found in trie or dictionary.\n", word);
+    }
+
+    saveData(*head, "words.txt");
+}
