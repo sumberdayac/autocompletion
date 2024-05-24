@@ -1,5 +1,5 @@
-#ifndef VOCABNODE_H
-#define VOCABNODE_H
+#ifndef FILEPROCESS_H
+#define FILEPROCESS_H
 
 #define string char*
 
@@ -19,4 +19,4 @@ void loadInitialData(vocabNode **head, const char *filename);
 void saveData(vocabNode *head, const char *filename);
 void updateDictionaryFromFile(vocabNode **head);
 
-#endif // VOCABNODE_H
+#endif
