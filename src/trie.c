@@ -102,3 +102,21 @@ void printTrie(TrieNode *root, char *prefix, bool *isLast, int level)
         }
     }
 }
+
+void initializeTrieFromList(TrieNode *root, vocabNode *head)
+{
+    vocabNode *current = head;
+    while (current != NULL)
+    {
+        WordWeightPair pair;
+        pair.word = strdup(current->word);
+        if (pair.word == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            exit(1);
+        }
+        pair.weight = current->weight;
+        insertWordTrie(root, pair);
+        free(pair.word);
+        current = current->next;
+    }
+}

@@ -64,7 +64,7 @@ void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int cou
     qsort(suggestions, count, sizeof(WordWeightPair), compareWeights);
     for (int i = 0; i < count; i++)
     {
-        printf("%s%s (f:%d)\n", prefix, suggestions[i].word + strlen(prefix), suggestions[i].weight);
+        printf("%d. %s%s\n", i+1, prefix, suggestions[i].word + strlen(prefix));
         free(suggestions[i].word); // Free the allocated memory for word
     }
 }

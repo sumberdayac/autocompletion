@@ -8,5 +8,6 @@ void findSuggestions(TrieNode *root, const char *prefix, WordWeightPair *suggest
 void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int count);
 void handleAutocomplete(TrieNode *root);
 void handleInsertNewWord(TrieNode *root);
+void displayMenu();
 
 #endif // AUTOCOMPLETE_H

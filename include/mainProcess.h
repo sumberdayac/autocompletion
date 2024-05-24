@@ -3,7 +3,7 @@
 
 #include "trie.h"
 
-void initializeTrie(TrieNode *root, WordWeightPair dataset[], int size);
 void displayMenu();
+void mainProcess();
 
 #endif // MAIN_H
