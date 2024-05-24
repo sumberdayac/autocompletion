@@ -62,6 +62,7 @@ void findSuggestions(TrieNode *root, const char *prefix, WordWeightPair *suggest
 void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int count)
 {
     qsort(suggestions, count, sizeof(WordWeightPair), compareWeights);
+    printf("\nSuggestions for %s:\n", prefix);
     for (int i = 0; i < count; i++)
     {
         printf("%d. %s%s\n", i+1, prefix, suggestions[i].word + strlen(prefix));
@@ -73,7 +74,7 @@ void handleAutocomplete(TrieNode *root)
 {
     char *prefix = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
     char *buffer = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
-    if (!prefix)
+    if (!prefix || !buffer)
     {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
@@ -93,22 +94,37 @@ void handleAutocomplete(TrieNode *root)
             scanf("%s", buffer);
             prefix = strcat(prefix, buffer);
         }
+
         WordWeightPair suggestions[MAX_SUGGESTIONS];
         int count = 0;
         findSuggestions(root, prefix, suggestions, &count);
         displaySuggestions(prefix, suggestions, count);
 
+        if (count > 0)
+        {
+            printf("Select a suggestion (1-%d) or press 0 to continue typing: ", count);
+            int choice;
+            scanf("%d", &choice);
+            if (choice > 0 && choice <= count)
+            {
+                strcpy(prefix, suggestions[choice - 1].word);
+                printf("Selected suggestion: %s\n", prefix);
+            }
+        }
+
         printf("\nDo you want to continue? (y/n): ");
-        char choice;
-        scanf(" %c", &choice);
-        if (choice == 'n')
+        char continueChoice;
+        scanf(" %c", &continueChoice);
+        if (continueChoice == 'n')
         {
             break;
         }
     }
 
     free(prefix);
+    free(buffer);
 }
+
 
 void handleInsertNewWord(TrieNode *root)
 {
