@@ -19,9 +19,10 @@ typedef struct {
 
 TrieNode *createNodeTrie();
 void insertWordTrie(TrieNode *root, WordWeightPair wordWeightPair);
-void displayDictionary(TrieNode *root);
+void displayDictionary(TrieNode *root, const char *prefix);
 void displayDictionaryHelper(TrieNode *node, char *buffer, int index);
 void printTrie(TrieNode *root, char *prefix, bool *isLast, int level);
+void printTrieWithPrefix(TrieNode *root, const char *prefix);
 void initializeTrieFromList(TrieNode *root, vocabNode *head);
 
 #endif // TRIE_H

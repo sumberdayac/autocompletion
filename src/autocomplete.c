@@ -62,7 +62,8 @@ void findSuggestions(TrieNode *root, const char *prefix, WordWeightPair *suggest
 void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int count)
 {
     qsort(suggestions, count, sizeof(WordWeightPair), compareWeights);
-    printf("\nSuggestions for %s:\n", prefix);
+    gotoxy(0, 3);
+    printf("Suggestions for %s:\n", prefix);
     for (int i = 0; i < count; i++)
     {
         printf("%d. %s%s\n", i+1, prefix, suggestions[i].word + strlen(prefix));
@@ -74,6 +75,8 @@ void handleAutocomplete(TrieNode *root)
 {
     char *prefix = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
     char *buffer = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
+    COORD cursorPos = {0, 2};
+    char pesan[100];
     if (!prefix || !buffer)
     {
         fprintf(stderr, "Memory allocation failed.\n");
@@ -83,14 +86,16 @@ void handleAutocomplete(TrieNode *root)
     prefix[0] = '\0';
     while (true)
     {
+        gotoxy(cursorPos.X, cursorPos.Y);
         if (prefix[0] == '\0')
         {
-            printf("Enter prefix: ");
+            printHalfScreen("Enter prefix: ", true, false);
             scanf("%s", prefix);
         }
         else
         {
-            printf("continue prefix: %s", prefix);
+            sprintf(pesan, "Continue prefix: %s", prefix);
+            printHalfScreen(pesan, true, false);
             scanf("%s", buffer);
             prefix = strcat(prefix, buffer);
         }
@@ -102,17 +107,20 @@ void handleAutocomplete(TrieNode *root)
 
         if (count > 0)
         {
-            printf("Select a suggestion (1-%d) or press 0 to continue typing: ", count);
+            gotoxy(cursorPos.X, cursorPos.Y);
+            sprintf(pesan, "Select a suggestion (1-%d) or press 0 to continue typing: ", count);
+            printHalfScreen(pesan, true, false);
             int choice;
             scanf("%d", &choice);
             if (choice > 0 && choice <= count)
             {
                 strcpy(prefix, suggestions[choice - 1].word);
-                printf("Selected suggestion: %s\n", prefix);
+                sprintf(pesan, "Selected suggestion: %s", prefix);
+                printHalfScreen(pesan, true, false);
             }
         }
 
-        printf("\nDo you want to continue? (y/n): ");
+        printHalfScreen("Do you want to continue? (y/n): ", true, false);
         char continueChoice;
         scanf(" %c", &continueChoice);
         if (continueChoice == 'n')
@@ -137,10 +145,12 @@ void handleInsertNewWord(TrieNode *root)
 
     int weight;
 
-    printf("Enter new word: ");
+    gotoxy(0, 2);
+
+    printHalfScreen("Enter new word: ", true, false);
     scanf("%s", buffer);
 
-    printf("Enter weight: ");
+    printHalfScreen("Enter weight: ", true, false);
     scanf("%d", &weight);
 
     TrieNode *current = root;
@@ -283,7 +293,8 @@ void handleDeleteWord(TrieNode *trieRoot, vocabNode **head)
     bool foundInDict = false;
     char word[MAX_WORD_LENGTH];
 
-    printf("Enter word to delete: ");
+    gotoxy(0, 2);
+    printHalfScreen("Enter word to delete: ", true, false);
     scanf("%s", word);
 
     deleteWordFromTrie(trieRoot, word, &foundInTrie);

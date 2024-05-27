@@ -38,10 +38,31 @@ void insertWordTrie(TrieNode *root, WordWeightPair wordWeightPair)
     current->weight = weight; // Update weight only for the end-of-word node
 }
 
-void displayDictionary(TrieNode *root)
+void displayDictionary(TrieNode *root, const char *prefix)
 {
-    char buffer[100];
-    displayDictionaryHelper(root, buffer, 0);
+    if (prefix == NULL || strlen(prefix) == 0)
+    {
+        char buffer[100];
+        displayDictionaryHelper(root, buffer, 0);
+    }
+    else
+    {
+        TrieNode *current = root;
+        while (*prefix)
+        {
+            int index = *prefix - 'a';
+            if (!current->children[index])
+            {
+                printf("No words found with the given prefix.\n");
+                return;
+            }
+            current = current->children[index];
+            prefix++;
+        }
+        char buffer[100];
+        strncpy(buffer, prefix, strlen(prefix));
+        displayDictionaryHelper(current, buffer, strlen(prefix));
+    }
 }
 
 void displayDictionaryHelper(TrieNode *node, char *buffer, int index)
@@ -49,7 +70,7 @@ void displayDictionaryHelper(TrieNode *node, char *buffer, int index)
     if (node->isEndOfWord)
     {
         buffer[index] = '\0';
-        printf("%s (Weight :%d)\n", buffer, node->weight);
+        printf("%s (Weight: %d)\n", buffer, node->weight);
     }
     for (int i = 0; i < ALPHABET_SIZE; i++)
     {
@@ -101,6 +122,23 @@ void printTrie(TrieNode *root, char *prefix, bool *isLast, int level)
             currentChild++;
         }
     }
+}
+
+void printTrieWithPrefix(TrieNode *root, const char *prefix) {
+    TrieNode *current = root;
+    printf("%s\n", prefix);
+    while (*prefix) {
+        int index = *prefix - 'a';
+        if (!current->children[index]) {
+            printf("Prefix not found in trie.\n");
+            return;
+        }
+        current = current->children[index];
+        prefix++;
+    }
+
+    bool isLast[100] = {0};
+    printTrie(current, "", isLast, 0);
 }
 
 void initializeTrieFromList(TrieNode *root, vocabNode *head)
