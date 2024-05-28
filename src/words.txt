@@ -1,3 +1,5 @@
+fight=1
+citrus=1
 the=308
 last=16
 librarian=12
@@ -376,3 +378,5 @@ learning=4
 unwavering=4
 spirit=4
 quaso=1
+are=1
+vine=1

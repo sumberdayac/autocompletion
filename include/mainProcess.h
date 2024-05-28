@@ -13,6 +13,8 @@ CONSOLE_SCREEN_BUFFER_INFO csbi;
 COORD WindowsSize;
 
 void displayMenu();
+void handlePrintTrie(TrieNode *root);
+void handlePrintDictionary(TrieNode *root);
 void mainProcess();
 void csrs(void);
 void gotoxy(int x, int y);

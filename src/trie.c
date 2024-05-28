@@ -48,6 +48,10 @@ void displayDictionary(TrieNode *root, const char *prefix)
     else
     {
         TrieNode *current = root;
+        char buffer[100];
+        strcpy(buffer, prefix);
+        int length = strlen(prefix);
+
         while (*prefix)
         {
             int index = *prefix - 'a';
@@ -59,9 +63,8 @@ void displayDictionary(TrieNode *root, const char *prefix)
             current = current->children[index];
             prefix++;
         }
-        char buffer[100];
-        strncpy(buffer, prefix, strlen(prefix));
-        displayDictionaryHelper(current, buffer, strlen(prefix));
+
+        displayDictionaryHelper(current, buffer, length);
     }
 }
 
@@ -126,7 +129,6 @@ void printTrie(TrieNode *root, char *prefix, bool *isLast, int level)
 
 void printTrieWithPrefix(TrieNode *root, const char *prefix) {
     TrieNode *current = root;
-    printf("%s\n", prefix);
     while (*prefix) {
         int index = *prefix - 'a';
         if (!current->children[index]) {
@@ -138,7 +140,11 @@ void printTrieWithPrefix(TrieNode *root, const char *prefix) {
     }
 
     bool isLast[100] = {0};
-    printTrie(current, "", isLast, 0);
+    // Print the root prefix
+    char rootPrefix[2] = {(char)(prefix[-1] - 'a' + 'A'), '\0'}; // Convert to uppercase
+    // printf("|--%s\n", rootPrefix);
+    // Print the children of the current node
+    printTrie(current, rootPrefix, isLast, 1);
 }
 
 void initializeTrieFromList(TrieNode *root, vocabNode *head)

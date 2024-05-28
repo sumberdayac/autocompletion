@@ -53,12 +53,93 @@ void displayMenu()
     printHalfScreen("Menu:", true, false);
     printHalfScreen("1. Autocomplete", true, false);
     printHalfScreen("2. Display Dictionary", true, false);
-    printHalfScreen("3. Insert new word with weight", true, false);
-    printHalfScreen("4. Load reference file", true, false);
-    printHalfScreen("5. Print Trie", true, false);
-    printHalfScreen("6. Delete word", true, false);
-    printHalfScreen("7. Print Trie with Prefix", true, false);
+    printHalfScreen("3. Print Trie", true, false);
+    printHalfScreen("4. Insert new word with weight", true, false);
+    printHalfScreen("5. Delete Word", true, false);
+    printHalfScreen("6. Load reference file", true, false);
     printHalfScreen("0. Exit", true, false);
+}
+
+void handlePrintTrie(TrieNode *root)
+{
+    while (true)
+    {
+        system("cls");
+        printGridUI("MENU PRINT TRIE");
+        
+        gotoxy(0, 2);
+        printHalfScreen("Trie:", true, false);
+        printHalfScreen("1. Print All", true, false);
+        printHalfScreen("2. Print with Prefix", true, false);
+        printHalfScreen("3. Back", true, false);
+        printHalfScreen("Enter your choice: ", true, false);
+        bool isLast[MAX_WORD_LENGTH] = {0};
+        char prefix[2] = " ";
+        int choice;
+        scanf("%d", &choice);
+        switch (choice)
+        {
+        case 1:
+            printHalfScreen("Press any key to continue...", false, false);
+            gotoxy(0, 3);
+            printTrie(root, prefix, isLast, 0);
+            getch();
+            break;
+        case 2:
+            printHalfScreen("Enter prefix: ", false, false);
+            scanf("%s", prefix);
+            printHalfScreen("Press any key to continue...", false, false);
+            gotoxy(0, 3);
+            printTrieWithPrefix(root, prefix);
+            getch();
+            break;
+        case 3:
+            return;
+            break;
+        
+        default:
+            printHalfScreen("Invalid choice. Please try again.", true, false);
+            break;
+        }
+    }
+}
+
+void handlePrintDictionary(TrieNode *root){
+    while (true){
+        system("cls");
+        printGridUI("MENU DISPLAY DICTIONARY");
+        gotoxy(0, 2);
+        printHalfScreen("Dictionary:", true, false);
+        printHalfScreen("1. Print All", true, false);
+        printHalfScreen("2. Print with Prefix", true, false);
+        printHalfScreen("3. Back", true, false);
+        printHalfScreen("Enter your choice: ", true, false);
+        int choice;
+        scanf("%d", &choice);
+        char prefix[2] = "";
+        switch (choice){
+            case 1:
+                printHalfScreen("Press any key to continue...", false, false);
+                gotoxy(0, 3);
+                displayDictionary(root, prefix);
+                getch();
+                break;  
+            case 2:
+                printHalfScreen("Enter prefix: ", true, false);
+                scanf("%s", prefix);
+                printHalfScreen("Press any key to continue...", false, false);
+                gotoxy(0, 3);
+                displayDictionary(root, prefix);
+                getch();
+                break;
+            case 3:
+                return;
+                break;
+            default:
+                printHalfScreen("Invalid choice. Please try again.", true, false);
+                break;
+        }
+    }
 }
 
 void mainProcess()
@@ -86,67 +167,32 @@ void mainProcess()
         case 1:
             system("cls");
             printGridUI("MENU AUTOCOMPLETE");
-            gotoxy(0, 2);
+            gotoxy(0, 4);
             handleAutocomplete(root);
             getch();
             break;
         case 2:
-            system("cls");
-            printGridUI("MENU DISPLAY DICTIONARY");
-            gotoxy(0, 2);
-            printHalfScreen("Dictionary:\n", true, false);
-            printf("fsfasf\n");
-            printHalfScreen("1. Print All\n", true, false);
-            printHalfScreen("2. Print with Prefix\n", true, false);
-            printHalfScreen("Enter your choice: ", true, false);
-            int option;
-            scanf("%d", &option);
-            if (option == 1)
-            {
-                displayDictionary(root, "");
-            }
-            else if (option == 2)
-            {
-                printHalfScreen("Enter prefix: ", true, false);
-                char prefix[2] = " ";
-                scanf("%s", prefix);
-                displayDictionary(root, prefix);
-            }
-            
-            getch();
+            handlePrintDictionary(root);
             break;
         case 3:
+            handlePrintTrie(root);
+            break;
+        case 4:
             system("cls");
             printGridUI("MENU INSERT NEW WORD");
             handleInsertNewWord(root);
             getch();
             break;
-        case 4:
-            system("cls");
-            printGridUI("MENU LOAD REFERENCE FILE");
-            updateDictionaryFromFile(&head);
-            getch();
-            break;
         case 5:
-            system("cls");
-            printGridUI("MENU PRINT TRIE");
-            bool isLast[MAX_WORD_LENGTH] = {0};
-            char prefix[2] = " ";
-            printTrie(root, prefix, isLast, 0);
-            getch();
-            break;
-        case 6:
             system("cls");
             printGridUI("MENU DELETE WORD");
             handleDeleteWord(root, &head);
             getch();
             break;
-        case 7:
+        case 6:
             system("cls");
-            printGridUI("MENU PRINT TRIE WITH PREFIX");
-            printHalfScreen("Enter prefix: ", true, false);
-            scanf("%s", prefix);
-            printTrieWithPrefix(root, prefix);
+            printGridUI("MENU LOAD REFERENCE FILE");
+            updateDictionaryFromFile(&head);
             getch();
             break;
         case 0:

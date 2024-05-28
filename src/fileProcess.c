@@ -138,7 +138,8 @@ void saveData(vocabNode *head, const char *filename) {
 }
 
 void updateDictionaryFromFile(vocabNode **head) {
-    printf("Insert file name for reference (without .txt extension): ");
+    gotoxy(0, 2);
+    printHalfScreen("Insert file name for reference (without .txt extension): ", true, false);
     
     char *filename = (char *)malloc(256 * sizeof(char));
     if (!filename) {

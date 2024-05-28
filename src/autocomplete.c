@@ -66,7 +66,7 @@ void displaySuggestions(const char *prefix, WordWeightPair *suggestions, int cou
     printf("Suggestions for %s:\n", prefix);
     for (int i = 0; i < count; i++)
     {
-        printf("%d. %s%s\n", i+1, prefix, suggestions[i].word + strlen(prefix));
+        printf("%d. %s%s\n", i + 1, prefix, suggestions[i].word + strlen(prefix));
         free(suggestions[i].word); // Free the allocated memory for word
     }
 }
@@ -75,7 +75,7 @@ void handleAutocomplete(TrieNode *root)
 {
     char *prefix = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
     char *buffer = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
-    COORD cursorPos = {0, 2};
+    COORD cursorPos = consoleInfo.dwCursorPosition;
     char pesan[100];
     if (!prefix || !buffer)
     {
@@ -86,14 +86,17 @@ void handleAutocomplete(TrieNode *root)
     prefix[0] = '\0';
     while (true)
     {
-        gotoxy(cursorPos.X, cursorPos.Y);
+        system("cls");
+        printGridUI("MENU AUTOCOMPLETE");
         if (prefix[0] == '\0')
         {
+            gotoxy(0, 2);
             printHalfScreen("Enter prefix: ", true, false);
             scanf("%s", prefix);
         }
         else
         {
+            gotoxy(0, 2);
             sprintf(pesan, "Continue prefix: %s", prefix);
             printHalfScreen(pesan, true, false);
             scanf("%s", buffer);
@@ -107,19 +110,21 @@ void handleAutocomplete(TrieNode *root)
 
         if (count > 0)
         {
-            gotoxy(cursorPos.X, cursorPos.Y);
+            gotoxy(0, 3);
             sprintf(pesan, "Select a suggestion (1-%d) or press 0 to continue typing: ", count);
             printHalfScreen(pesan, true, false);
             int choice;
             scanf("%d", &choice);
             if (choice > 0 && choice <= count)
             {
+                gotoxy(0, 4);
                 strcpy(prefix, suggestions[choice - 1].word);
                 sprintf(pesan, "Selected suggestion: %s", prefix);
                 printHalfScreen(pesan, true, false);
             }
         }
 
+        gotoxy(0, 5);
         printHalfScreen("Do you want to continue? (y/n): ", true, false);
         char continueChoice;
         scanf(" %c", &continueChoice);
@@ -132,7 +137,6 @@ void handleAutocomplete(TrieNode *root)
     free(prefix);
     free(buffer);
 }
-
 
 void handleInsertNewWord(TrieNode *root)
 {
@@ -150,7 +154,7 @@ void handleInsertNewWord(TrieNode *root)
     printHalfScreen("Enter new word: ", true, false);
     scanf("%s", buffer);
 
-    printHalfScreen("Enter weight: ", true, false);
+    printHalfScreen("Enter weight: ", false, false);
     scanf("%d", &weight);
 
     TrieNode *current = root;
@@ -190,6 +194,9 @@ void handleInsertNewWord(TrieNode *root)
         newNode->next = head; // Corrected: head itself, not &head
         head = newNode;
     }
+
+    gotoxy(0, 3);
+    printf("Word '%s' has been successfully inserted with weight %d.\n", buffer, weight);
 
     saveData(head, "words.txt");
 
