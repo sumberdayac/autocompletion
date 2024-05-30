@@ -181,7 +181,7 @@ void handleInsertNewWord(TrieNode *root)
     }
 
     vocabNode *head = NULL;
-    loadInitialData(&head, "words.txt");
+    loadInitialData(&head, "../data/words.txt");
 
     vocabNode *foundNode = findWord(head, buffer); // Corrected: pass head instead of &head
     if (foundNode)
@@ -198,7 +198,7 @@ void handleInsertNewWord(TrieNode *root)
     gotoxy(0, 3);
     printf("Word '%s' has been successfully inserted with weight %d.\n", buffer, weight);
 
-    saveData(head, "words.txt");
+    saveData(head, "../data/words.txt");
 
     free(buffer);
 }
@@ -324,5 +324,5 @@ void handleDeleteWord(TrieNode *trieRoot, vocabNode **head)
         printf("Word '%s' not found in trie or dictionary.\n", word);
     }
 
-    saveData(*head, "words.txt");
+    saveData(*head, "../data/words.txt");
 }

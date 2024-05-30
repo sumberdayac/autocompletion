@@ -66,7 +66,7 @@ void handlePrintTrie(TrieNode *root)
     {
         system("cls");
         printGridUI("MENU PRINT TRIE");
-        
+
         gotoxy(0, 2);
         printHalfScreen("Trie:", true, false);
         printHalfScreen("1. Print All", true, false);
@@ -96,7 +96,7 @@ void handlePrintTrie(TrieNode *root)
         case 3:
             return;
             break;
-        
+
         default:
             printHalfScreen("Invalid choice. Please try again.", true, false);
             break;
@@ -104,8 +104,10 @@ void handlePrintTrie(TrieNode *root)
     }
 }
 
-void handlePrintDictionary(TrieNode *root){
-    while (true){
+void handlePrintDictionary(TrieNode *root)
+{
+    while (true)
+    {
         system("cls");
         printGridUI("MENU DISPLAY DICTIONARY");
         gotoxy(0, 2);
@@ -117,27 +119,28 @@ void handlePrintDictionary(TrieNode *root){
         int choice;
         scanf("%d", &choice);
         char prefix[2] = "";
-        switch (choice){
-            case 1:
-                printHalfScreen("Press any key to continue...", false, false);
-                gotoxy(0, 3);
-                displayDictionary(root, prefix);
-                getch();
-                break;  
-            case 2:
-                printHalfScreen("Enter prefix: ", true, false);
-                scanf("%s", prefix);
-                printHalfScreen("Press any key to continue...", false, false);
-                gotoxy(0, 3);
-                displayDictionary(root, prefix);
-                getch();
-                break;
-            case 3:
-                return;
-                break;
-            default:
-                printHalfScreen("Invalid choice. Please try again.", true, false);
-                break;
+        switch (choice)
+        {
+        case 1:
+            printHalfScreen("Press any key to continue...", false, false);
+            gotoxy(0, 3);
+            displayDictionary(root, prefix);
+            getch();
+            break;
+        case 2:
+            printHalfScreen("Enter prefix: ", true, false);
+            scanf("%s", prefix);
+            printHalfScreen("Press any key to continue...", false, false);
+            gotoxy(0, 3);
+            displayDictionary(root, prefix);
+            getch();
+            break;
+        case 3:
+            return;
+            break;
+        default:
+            printHalfScreen("Invalid choice. Please try again.", true, false);
+            break;
         }
     }
 }
@@ -145,7 +148,7 @@ void handlePrintDictionary(TrieNode *root){
 void mainProcess()
 {
     vocabNode *head = NULL;
-    const char *initialDataFile = "words.txt";
+    const char *initialDataFile = "../data/words.txt";
     loadInitialData(&head, initialDataFile);
 
     TrieNode *root = createNodeTrie();

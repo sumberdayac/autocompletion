@@ -5,14 +5,17 @@
 #include "../include/fileProcess.h"
 #include "trie.c"
 
-vocabNode* createNodeDictionary(const char *word, int weight) {
+vocabNode *createNodeDictionary(const char *word, int weight)
+{
     vocabNode *newNode = (vocabNode *)malloc(sizeof(vocabNode));
-    if (newNode == NULL) {
+    if (newNode == NULL)
+    {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
     newNode->word = strdup(word);
-    if (newNode->word == NULL) {
+    if (newNode->word == NULL)
+    {
         fprintf(stderr, "Memory allocation for word failed.\n");
         free(newNode);
         exit(1);
@@ -22,10 +25,13 @@ vocabNode* createNodeDictionary(const char *word, int weight) {
     return newNode;
 }
 
-vocabNode* findWord(vocabNode *head, const char *word) {
+vocabNode *findWord(vocabNode *head, const char *word)
+{
     vocabNode *current = head;
-    while (current != NULL) {
-        if (strcmp(current->word, word) == 0) {
+    while (current != NULL)
+    {
+        if (strcmp(current->word, word) == 0)
+        {
             return current;
         }
         current = current->next;
@@ -33,21 +39,27 @@ vocabNode* findWord(vocabNode *head, const char *word) {
     return NULL;
 }
 
-void addWordDictionary(vocabNode **head, const char *word) {
+void addWordDictionary(vocabNode **head, const char *word)
+{
     vocabNode *foundNode = findWord(*head, word);
-    if (foundNode) {
+    if (foundNode)
+    {
         foundNode->weight += 1;
-    } else {
+    }
+    else
+    {
         vocabNode *newNode = createNodeDictionary(word, 1);
         newNode->next = *head;
         *head = newNode;
     }
 }
 
-void freeList(vocabNode *head) {
+void freeList(vocabNode *head)
+{
     vocabNode *current = head;
     vocabNode *next;
-    while (current != NULL) {
+    while (current != NULL)
+    {
         next = current->next;
         free(current->word);
         free(current);
@@ -55,28 +67,36 @@ void freeList(vocabNode *head) {
     }
 }
 
-void processText(vocabNode **head, const char *text) {
+void processText(vocabNode **head, const char *text)
+{
     char buffer[100];
     int i = 0;
-    while (*text) {
-        if (isalpha(*text)) {
+    while (*text)
+    {
+        if (isalpha(*text))
+        {
             buffer[i++] = tolower(*text);
-        } else if (i > 0) {
+        }
+        else if (i > 0)
+        {
             buffer[i] = '\0';
             addWordDictionary(head, buffer);
             i = 0;
         }
         text++;
     }
-    if (i > 0) {
+    if (i > 0)
+    {
         buffer[i] = '\0';
         addWordDictionary(head, buffer);
     }
 }
 
-char* readFileContent(const char *filename) {
+char *readFileContent(const char *filename)
+{
     FILE *file = fopen(filename, "r");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         fprintf(stderr, "Error opening file.\n");
         exit(1);
     }
@@ -86,7 +106,8 @@ char* readFileContent(const char *filename) {
     fseek(file, 0, SEEK_SET);
 
     char *content = (char *)malloc((length + 1) * sizeof(char));
-    if (content == NULL) {
+    if (content == NULL)
+    {
         fprintf(stderr, "Memory allocation failed.\n");
         fclose(file);
         exit(1);
@@ -99,17 +120,21 @@ char* readFileContent(const char *filename) {
     return content;
 }
 
-void loadInitialData(vocabNode **head, const char *filename) {
+void loadInitialData(vocabNode **head, const char *filename)
+{
     FILE *file = fopen(filename, "r");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         fprintf(stderr, "Error opening file.\n");
         exit(1);
     }
 
     char line[256];
-    while (fgets(line, sizeof(line), file)) {
+    while (fgets(line, sizeof(line), file))
+    {
         char *equalSign = strchr(line, '=');
-        if (equalSign) {
+        if (equalSign)
+        {
             *equalSign = '\0';
             char *word = line;
             int weight = atoi(equalSign + 1);
@@ -121,15 +146,18 @@ void loadInitialData(vocabNode **head, const char *filename) {
     fclose(file);
 }
 
-void saveData(vocabNode *head, const char *filename) {
+void saveData(vocabNode *head, const char *filename)
+{
     FILE *file = fopen(filename, "w");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         fprintf(stderr, "Error opening file for writing.\n");
         exit(1);
     }
 
     vocabNode *current = head;
-    while (current != NULL) {
+    while (current != NULL)
+    {
         fprintf(file, "%s=%d\n", current->word, current->weight);
         current = current->next;
     }
@@ -137,33 +165,38 @@ void saveData(vocabNode *head, const char *filename) {
     fclose(file);
 }
 
-void updateDictionaryFromFile(vocabNode **head) {
+void updateDictionaryFromFile(vocabNode **head)
+{
     gotoxy(0, 2);
     printHalfScreen("Insert file name for reference (without .txt extension): ", true, false);
-    
+
     char *filename = (char *)malloc(256 * sizeof(char));
-    if (!filename) {
+    if (!filename)
+    {
         fprintf(stderr, "Memory allocation failed.\n");
         exit(1);
     }
-    if (scanf("%255s", filename) != 1) {
+    if (scanf("%255s", filename) != 1)
+    {
         fprintf(stderr, "Error reading filename.\n");
         free(filename);
         return;
     }
-    
+
     // Append ".txt" to the filename
     char *newTextFile = (char *)malloc(260 * sizeof(char)); // Ensure there's enough space
-    if (!newTextFile) {
+    if (!newTextFile)
+    {
         fprintf(stderr, "Memory allocation failed.\n");
         free(filename);
         exit(1);
     }
-    snprintf(newTextFile, 260, "%s.txt", filename);
+    snprintf(newTextFile, 260, "../data/%s.txt", filename);
 
     // Read the new text content from the reference file
     char *newText = readFileContent(newTextFile);
-    if (newText == NULL) {
+    if (newText == NULL)
+    {
         fprintf(stderr, "Error reading reference file.\n");
         free(filename);
         free(newTextFile);
@@ -175,7 +208,7 @@ void updateDictionaryFromFile(vocabNode **head) {
 
     printf("Data updated successfully.\n");
 
-    saveData(*head, "words.txt");
+    saveData(*head, "../data/words.txt");
 
     // Free the allocated memory for the new text
     free(newText);
@@ -183,9 +216,11 @@ void updateDictionaryFromFile(vocabNode **head) {
     free(newTextFile);
 }
 
-void insertListIntoTrie(TrieNode *trieRoot, vocabNode *head) {
+void insertListIntoTrie(TrieNode *trieRoot, vocabNode *head)
+{
     vocabNode *current = head;
-    while (current != NULL) {
+    while (current != NULL)
+    {
         WordWeightPair pair = {current->word, current->weight};
         insertWordTrie(trieRoot, pair);
         current = current->next;
