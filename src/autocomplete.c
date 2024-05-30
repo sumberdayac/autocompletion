@@ -75,7 +75,7 @@ void handleAutocomplete(TrieNode *root)
 {
     char *prefix = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
     char *buffer = (char *)malloc(MAX_WORD_LENGTH * sizeof(char));
-    COORD cursorPos = consoleInfo.dwCursorPosition;
+    // COORD cursorPos = consoleInfo.dwCursorPosition;
     char pesan[100];
     if (!prefix || !buffer)
     {
